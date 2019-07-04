@@ -26,15 +26,15 @@ class Random(metaclass=Singleton):
 
     @staticmethod
     def roulette_wheel_selection(container):
-        return choices(container, weights=container) # return index instead?
+        return choices(container, weights=[el.fitness for el in container]) # return index instead?
 
     @staticmethod
     def greedy_selection(container):
-        max_val = max(container)
+        max_val = max(container, key=lambda e: e.fitness)
         
         max_elements = []
         for el in container:
-            if el == max_val:
+            if el.fitness == max_val:
                 max_elements.append(el)
             
         return choice(max_elements)
@@ -48,10 +48,10 @@ class Random(metaclass=Singleton):
 
     @staticmethod
     def tournament_selection(container, tau):
-        best = choice(container)
+        best = container[0]
 
         for el in container:
-            if Random.next_double() < tau and best < el:
+            if Random.next_double() < tau and best.fitness < el.fitness:    # performance?
                 best = el
 
         return best
@@ -59,15 +59,15 @@ class Random(metaclass=Singleton):
     @staticmethod
     def tournament_selection_micro_classifier(container, tau):
 
-        best = choice(container)
-        best_val = best[0] / best[1]
+        best = container[0]
+        best_val = best.fitness / best.numerosity
 
         for el in container:
-            if best_val < el[0] / el[1]:
-                for i in range(0, el[1]): # repeat numerosity times
+            if best_val < el.fitness / el.numerosity:
+                for i in range(0, el.numerosity): # repeat numerosity times
                     if Random.next_double() < tau:
                         best = el
-                        best_val = best[0] / best[1]
+                        best_val = best.fitness / best.numerosity
                         break
 
         return best

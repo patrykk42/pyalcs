@@ -5,23 +5,14 @@ class GA:
 
     # --- PRIVATE ---
 
-    def __selectOffspring(self, action_set):
-        targets = []
+    @staticmethod
+    def __select_offspring(self, action_set):
 
-        for cl in action_set:
-            targets.append(cl)
-
-        fitnesses = []
         if 0 < Constants.tau <= 1.0:
-            for cl in action_set:
-                fitnesses.append((cl.fitness, cl.numerosity))
-            selected = Random.tournament_selection(fitnesses, Constants.tau)
+            return Random.tournament_selection(action_set, Constants.tau)
         else:
-            for cl in action_set:
-                fitnesses.append(cl.fitness)
-            selected = Random.roulette_wheel_selection(fitnesses)
+            return Random.roulette_wheel_selection(action_set)
 
-        return
 
     def __crossover(self):
         return "TODO"
